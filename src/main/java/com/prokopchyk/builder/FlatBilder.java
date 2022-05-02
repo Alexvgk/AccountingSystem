@@ -14,9 +14,17 @@ public class FlatBilder {
         this.flat.setNumberOfHuman(nHuman);
         return this;
     }
+    public FlatBilder setGroundId(int groundId){
+         this.flat.setGroundId(groundId);
+         return this;
+    }
+    public FlatBilder setId(int id){
+         this.flat.setId(id);
+         return this;
+    }
 
-    public FlatBilder setSqrt(double sqrt) {
-        this.flat.setSqrt(sqrt);
+    public FlatBilder setArea(double area) {
+        this.flat.setArea(area);
         return this;
     }
 

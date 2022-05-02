@@ -17,13 +17,25 @@ public class GroundBuilder {
         newGround.setNumberOfFlatsInGround(numFlats);
         return this;
     }
+    public GroundBuilder setHouseId(int houseId){
+        newGround.setHouseId(houseId);
+        return this;
+    }
+    public GroundBuilder setGroundNumber(int groundNumber){
+        newGround.setGroundNumber(groundNumber);
+        return this;
+    }
+    public GroundBuilder setId(int id){
+        newGround.setId(id);
+        return this;
+    }
     public GroundBuilder fillingGround(){
         double flatArea = 0;
         for(int i = 0; i < newGround.getFlatsOnGround();i++) {
             Scanner in = new Scanner(System.in);
             System.out.println("Enter area of the flat #" + i);
             flatArea = in.nextDouble();
-            Flat newFlat = new FlatBilder().setSqrt(flatArea).setNumOfFlat().bilder();
+            Flat newFlat = new FlatBilder().setArea(flatArea).setNumOfFlat().bilder();
             newGround.addFlat(newFlat);
         }
         return this;
@@ -31,8 +43,8 @@ public class GroundBuilder {
     public GroundBuilder fillingGround(Ground ground){
         double flatArea = 0;
         for(int i = 0; i < newGround.getFlatsOnGround();i++) {
-            flatArea = ground.getFlat(i).getSqrt();
-            Flat newFlat = new FlatBilder().setSqrt(flatArea).setNumOfFlat().bilder();
+            flatArea = ground.getFlat(i).getArea();
+            Flat newFlat = new FlatBilder().setArea(flatArea).setNumOfFlat().bilder();
             newGround.addFlat(newFlat);
         }
         return this;

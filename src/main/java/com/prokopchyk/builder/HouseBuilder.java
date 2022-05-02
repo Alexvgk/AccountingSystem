@@ -17,6 +17,10 @@ public class HouseBuilder {
         newHouse.setNumberOfGrounds(height);
         return this;
     }
+    public HouseBuilder setId(int id){
+        newHouse.setId(id);
+        return this;
+    }
 
     public HouseBuilder setHouseName(String name) {
         newHouse.setHouseName(name);
@@ -35,12 +39,13 @@ public class HouseBuilder {
         Ground first = new GroundBuilder()
                 .setNumOfFlats(k)
                 .fillingGround()
+                .setId(newHouse.getId()*10)
                 .Builder();
         newHouse.addGround(first);
         for (int i = 1; i < newHouse.getNumberOfGrounds(); i++) {
             Ground other = new GroundBuilder()
                     .setNumOfFlats(k)
-                    .fillingGround(first)
+                    .fillingGround(first).setId(newHouse.getId()*10 + i)
                     .Builder();
             newHouse.addGround(other);
         }
