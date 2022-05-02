@@ -150,7 +150,7 @@ public class HouseDaoImp extends AbstractDAO<House>{
             }
         }
         else {
-            throw new DAOException(new NoSuchElementException("No maker with the given id"));
+            throw new DAOException(new NoSuchElementException("No house with the given id"));
         }
     }
 
