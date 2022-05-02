@@ -15,7 +15,7 @@ public class House implements Externalizable {
     private List<Ground> grounds;
     private final int heightOfGround = 3;
     private int numberOfGrounds = 0;
-   // private int houseNumber = 0;
+    private int id;
     private String houseName;
 
     public House() {
@@ -25,6 +25,10 @@ public class House implements Externalizable {
     public void setGrounds(List<Ground> grounds){
         this.grounds = new ArrayList<Ground>(grounds);
     }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getId() {return id;}
     public void setNumberOfGrounds(int numberOfGrounds) {
         this.numberOfGrounds = numberOfGrounds;
     }

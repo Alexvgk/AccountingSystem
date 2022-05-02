@@ -8,11 +8,39 @@ import java.io.ObjectOutput;
 
 public class Ground  implements Externalizable {
     private List<Flat> flat;
-    private int NumberOfFlatsInGround = 0;
+    private int groundNumber = 0;
+    private int houseId = 0;
+    private int numberOfFlatsInGround = 0;
+    private int id;
 
     public Ground() {
         flat = new ArrayList<>(0);
         setNumberOfFlatsInGround(0);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    public void setHouseId(int houseId){
+        this.houseId = houseId;
+    }
+    public void setGroundNumber(int groundNumber){
+        this.groundNumber = groundNumber;
+    }
+
+
+    public void setIdByHouse(int houseId,int k){
+        this.id = houseId * 10 + k;
+    }
+    public int getHouseId() {
+        return houseId;
+    }
+    public int getGroundNumber() {
+        return groundNumber;
     }
 
     public void setFlat(List<Flat>flat){
@@ -30,7 +58,7 @@ public class Ground  implements Externalizable {
     }
 
     public void setNumberOfFlatsInGround(int numberOfFlatsInGround) {
-        NumberOfFlatsInGround = numberOfFlatsInGround;
+        this.numberOfFlatsInGround = numberOfFlatsInGround;
     }
 
     public Flat getFlat(int i){
@@ -42,18 +70,18 @@ public class Ground  implements Externalizable {
     }
 
     public int getFlatsOnGround() {
-        return NumberOfFlatsInGround;
+        return numberOfFlatsInGround;
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(NumberOfFlatsInGround);
+        out.writeObject(numberOfFlatsInGround);
         out.writeObject(flat);
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        NumberOfFlatsInGround = (int) in.readObject();
+        numberOfFlatsInGround = (int) in.readObject();
         flat = (List<Flat>) in.readObject();
 
     }
