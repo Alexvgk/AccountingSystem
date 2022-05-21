@@ -6,67 +6,116 @@ import com.prokopchyk.building.Ground;
 import com.prokopchyk.building.House;
 import com.prokopchyk.building.houseComparator.AreaCompare;
 import com.prokopchyk.building.houseComparator.PersonsCompare;
+import com.prokopchyk.dao.DAOException;
+import com.prokopchyk.dao.DBConnector;
 import com.prokopchyk.dao.HouseDaoImp;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class HouseService  {
     private static  HouseService houseService;
     private static HouseDaoImp houseDaoImp;
-    private HouseService(){
-        houseDaoImp = new HouseDaoImp();
+    private HouseService() {
+        try {
+            houseDaoImp = new HouseDaoImp(DBConnector.getConnection());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     };
-    public synchronized static HouseService getHouseService(){
+    public synchronized static HouseService getHouseService() throws SQLException {
         if(houseService == null)
             houseService = new HouseService();
         return houseService;
     }
 
-    public List<House> getAll(){
-        return houseDaoImp.getAll();
-    }
-    public void save(House house){
-        houseDaoImp.save(house);
+
+ public List<House> getAllFromDatabase(){
+     try {
+         return houseDaoImp.findAll();
+     } catch (DAOException | SQLException e) {
+         e.printStackTrace();
+         return null;
+     }
+ }
+
+    public void saveToDatabase(House house){
+        try {
+            houseDaoImp.create(house);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void delete(House house){
-        houseDaoImp.delete(house);
+    public void deleteFromDatabase(int id){
+        try {
+            houseDaoImp.delete(id);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
-    public void update(House house,House houseNew){
-        houseDaoImp.update(house,houseNew);
-    }
-    public House getByInd(int ind){
-        return houseDaoImp.getByNumber(ind);
+    public void updateInDatabase(House houseNew){
+        try {
+            houseDaoImp.update(houseNew);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public House createHouse(int numOfGrounds, int numOfFlatsInGround,String name) {
-        House house = new HouseBuilder().setHouseName(name).setNumOfGrounds(numOfGrounds).builder();
+    public Optional<House> getByIdFromDatabase(int id){
+        try {
+          return houseDaoImp.findById(id);
+        } catch (DAOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-        house.addGround(GroundService.getGroundService().createGround(numOfFlatsInGround));
+    public List<House> getByNameFromDatabase(String name){
+        try{
+            return houseDaoImp.findAllByName(name);
+        } catch (DAOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public Optional<House> getByFlatId(int flatId){
+        try{
+            return houseDaoImp.findHouseByFlatId(flatId);
+        } catch (DAOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public List<House> selectByAreaFromDatabase(double area){
+        try {
+            return houseDaoImp.selectHousesByArea(area);
+        } catch (DAOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public House createHouse(int numOfGrounds, int numOfFlatsInGround,String name,int id) {
+        House house = new HouseBuilder().setHouseName(name).setNumOfGrounds(numOfGrounds).setId(id).builder();;
+        house.addGround(GroundService.getGroundService().createGround(numOfFlatsInGround,house.getId(),0));
         int firstFloor = 0;
         for (int i = 1; i < numOfGrounds; ++i) {
-            house.addGround(GroundService.getGroundService().cloneGround(house.getGround(firstFloor)));
+            Ground addGround = GroundService.getGroundService().cloneGround(house.getGround(firstFloor),i);
+            house.addGround(addGround);
         }
 
         return house;
     }
 
-    public House cloneHouse(House house) {
-        House newHouse = new HouseBuilder().setHouseName(house.getHouseName())
-                .setNumOfGrounds(house.getNumberOfGrounds()).builder();
-        for (Ground ground : house.getGrounds()) {
-            newHouse.addGround(GroundService.getGroundService().cloneGround(ground));
-        }
-
-        return newHouse;
-    }
     public  double getHouseArea(House house) {
         int sqrt = 0;
         for(int i = 0; i < house.getNumberOfGrounds(); i++){
             for(int j = 0; j < house.getGrounds().get(0).getFlatsOnGround(); j++) {
-            sqrt += house.getGround(i).getFlat(j).getSqrt();
+            sqrt += house.getGround(i).getFlat(j).getArea();
             }
         }
         return sqrt;
