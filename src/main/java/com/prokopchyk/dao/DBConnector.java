@@ -1,15 +1,12 @@
 package com.prokopchyk.dao;
 
-import com.mysql.fabric.jdbc.FabricMySQLDriver;
-
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
 public class DBConnector {
-    private static final String DRIVER = "com.mysql.jdbc.Driver";
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";;
     private static final String DB_URL = "jdbc:mysql://localhost:3306/houses";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "root1337";
