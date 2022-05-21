@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class HouseDaoImp extends AbstractDAO<House>{
-    private static List<House> houses = new ArrayList<>();
 
     private static final String SELECT_ALL_HOUSES = """
             SELECT id, houseName
@@ -37,11 +36,13 @@ public class HouseDaoImp extends AbstractDAO<House>{
                 WHERE id = ?
             """;
     private static final String SELECT_HOUSE_BY_AREA = """
-            Select Sum(flats.areaCount) as sum, floors.houseId as hId
+            Select Sum(flats.areaCount) as sum, floors.houseId as id, houses.houseName as houseName
              from floors inner Join flats
              on floors.id = flats.floorId
+             inner join houses
+             on floors.houseId = houses.id
              group by houseId
-             having sum > ?;
+             having Sum(flats.areaCount) > ?;
             """;
     private static final String FIND_HOUSE_BY_FLATID = """
             Select id,houseName from houses
@@ -49,7 +50,7 @@ public class HouseDaoImp extends AbstractDAO<House>{
              (select houseid from floors
              where id =
             (select floorId from flats
-            where id = 110));
+            where id = ?));
             """;
 
     public HouseDaoImp(Connection connection) {
@@ -78,16 +79,41 @@ public class HouseDaoImp extends AbstractDAO<House>{
             throw new DAOException("Error in getting house by id", e);
         }
     }
-    public Optional<House> findAllByName(String name) throws DAOException {
+    public List<House> findAllByName(String name) throws DAOException {
         try (var preparedStatement = connection.prepareStatement(SELECT_HOUSE_BY_NAME)) {
             preparedStatement.setString(1, name);
+            ResultSet result = preparedStatement.executeQuery();
+            var houseList = getListHousesByResultSet(result);
+            return houseList;
+
+        } catch (SQLException e) {
+            throw new DAOException("Error in getting house by id", e);
+        }
+    }
+
+    public  Optional<House> findHouseByFlatId(int flatId) throws  DAOException{
+        try (var preparedStatement = connection.prepareStatement(FIND_HOUSE_BY_FLATID)) {
+            preparedStatement.setInt(1, flatId);
             ResultSet result = preparedStatement.executeQuery();
             var houseList = getListHousesByResultSet(result);
             return houseList.isEmpty() ? Optional.empty() : Optional.of(houseList.get(0));
 
         } catch (SQLException e) {
-            throw new DAOException("Error in getting house by id", e);
+            throw new DAOException("Error in getting house by flat id", e);
         }
+    }
+
+    public List<House> selectHousesByArea(double area) throws DAOException{
+        try (var preparedStatement = connection.prepareStatement(SELECT_HOUSE_BY_AREA)) {
+            preparedStatement.setDouble(1, area);
+            ResultSet result = preparedStatement.executeQuery();
+            var houseList = getListHousesByResultSet(result);
+            return houseList;
+
+        } catch (SQLException e) {
+            throw new DAOException("Error in getting house by flat id", e);
+        }
+
     }
 
     @Override
@@ -95,7 +121,7 @@ public class HouseDaoImp extends AbstractDAO<House>{
         Optional<House> optionalMaker = findById(id);
         if (optionalMaker.isPresent()) {
             try (var preparedStatement = connection.prepareStatement(DELETE_HOUSE_BY_ID)) {
-                preparedStatement.setLong(1, id);
+                preparedStatement.setInt(1, id);
                 return preparedStatement.executeUpdate() == 1;
             } catch (SQLException e) {
                 throw new DAOException(e);
@@ -154,9 +180,6 @@ public class HouseDaoImp extends AbstractDAO<House>{
         }
     }
 
-    public House getByNumber(int ind){
-        return houses.get(ind);
-    }
 
     private List<House> getListHousesByResultSet(ResultSet resultSet) throws SQLException, DAOException {
         List<House> houses = new ArrayList<>();
