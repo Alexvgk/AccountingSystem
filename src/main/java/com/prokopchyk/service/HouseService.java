@@ -100,6 +100,10 @@ public class HouseService  {
     }
 
     public House createHouse(int numOfGrounds, int numOfFlatsInGround,String name,int id) {
+        if(numOfGrounds < 0){
+            throw new IllegalArgumentException("Incorrect house settings");
+        }
+        else{
         House house = new HouseBuilder().setHouseName(name).setNumOfGrounds(numOfGrounds).setId(id).builder();;
         house.addGround(GroundService.getGroundService().createGround(numOfFlatsInGround,house.getId(),0));
         int firstFloor = 0;
@@ -109,9 +113,10 @@ public class HouseService  {
         }
 
         return house;
+        }
     }
 
-    public  double getHouseArea(House house) {
+    public  double getHouseArea(House house) { // return general area
         int sqrt = 0;
         for(int i = 0; i < house.getNumberOfGrounds(); i++){
             for(int j = 0; j < house.getGrounds().get(0).getFlatsOnGround(); j++) {
@@ -121,7 +126,7 @@ public class HouseService  {
         return sqrt;
     }
 
-    public int getNumberOfHuman(House house){  // возвращает общее число жильцов
+    public int getNumberOfHuman(House house){  // return general number of residents
         int kol = 0;
         for(int i = 0; i < house.getNumberOfGrounds(); i++){
             for(int j = 0; j < house.getGrounds().get(0).getFlatsOnGround(); j++) {
@@ -152,6 +157,12 @@ public class HouseService  {
                 System.out.println("Enter number of persons in "+house.getGrounds().get(i).getFlat(j).getNumber()+" flat");
                 Scanner in = new Scanner(System.in);
                 int persons =  in.nextInt();
+                while(persons < 0){
+                    System.out.println("Incorrect value." +
+                            "Enter number of persons in "+house.getGrounds().get(i).getFlat(j).getNumber()+" flat");
+                     in = new Scanner(System.in);
+                     persons =  in.nextInt();
+                }
                 house.getGrounds().get(i).getFlat(j).setNumberOfHuman(persons);
             }
         }

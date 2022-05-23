@@ -20,7 +20,7 @@ public class HouseListService {
     public void readHouseList(String fileName) {
         try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(fileName))) {
             for (House house : (List<House>) objectInputStream.readObject()) {
-                HouseService.getHouseService().save(house);
+                HouseService.getHouseService().saveToDatabase(house);
             }
         } catch (Exception e) {
             System.out.println( "Error"+ e.getMessage());
@@ -29,7 +29,7 @@ public class HouseListService {
 
     public void writeHouseList(String fileName) {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(fileName))) {
-            objectOutputStream.writeObject(HouseService.getHouseService().getAll());
+            objectOutputStream.writeObject(HouseService.getHouseService().getAllFromDatabase());
         } catch (Exception e) {
             System.out.println( e.getMessage());
         }

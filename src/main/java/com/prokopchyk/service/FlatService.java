@@ -4,6 +4,7 @@ import com.prokopchyk.builder.FlatBilder;
 import com.prokopchyk.building.Flat;
 import com.prokopchyk.building.flatComparator.FlatAreaCompare;
 import com.prokopchyk.building.flatComparator.FlatPersonsCompare;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,22 +24,26 @@ public class FlatService {
         return answer;
     }
 
-    public Flat createFlat() {
-        int numOfPeople = 3;
-        double area = 10.0;
+    public Flat createFlat(int id,int groundId) {
+        int numOfPeople = (int) (Math.random()*5 +1);
+        double area = (int) (Math.random()*40 + 10);
 
         return new FlatBilder()
-                .setSqrt(area)
+                .setArea(area)
+                .setGroundId(groundId)
+                .setId(id)
                 .setNumberOfHuman(numOfPeople)
                 .setNumOfFlat()
                 .bilder();
     }
 
-    public Flat cloneFlat(Flat flat) {
+    public Flat cloneFlat(@NotNull Flat flat,int id,int groundId) {
         return new FlatBilder()
                 .setNumOfFlat()
+                .setId(id)
+                .setGroundId(groundId)
                 .setNumberOfHuman(flat.getNumberOfHuman())
-                .setSqrt(flat.getSqrt())
+                .setArea(flat.getArea())
                 .bilder();
     }
 }
