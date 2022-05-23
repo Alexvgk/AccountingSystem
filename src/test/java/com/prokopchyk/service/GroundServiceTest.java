@@ -20,18 +20,18 @@ public class GroundServiceTest {
     void setUp() {
         ground = new Ground();
         for (int i = 0; i < flats; ++i) {
-            ground.addFlat(FlatService.getFlatService().createFlat());
+            ground.addFlat(FlatService.getFlatService().createFlat(1,1));
         }
     }
     @Test
     public void createGround() {
-        Ground expGround = GroundService.getGroundService().createGround(flats);
+        Ground expGround = GroundService.getGroundService().createGround(flats,1,1);
         Assertions.assertEquals(expGround, ground);
     }
 
     @Test
     public void cloneGround() {
-        Ground expGround = GroundService.getGroundService().cloneGround(ground);
+        Ground expGround = GroundService.getGroundService().cloneGround(ground,1);
         Assertions.assertEquals(expGround, ground);
     }
 }

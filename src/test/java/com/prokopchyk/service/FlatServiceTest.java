@@ -2,9 +2,6 @@ package com.prokopchyk.service;
 
 import com.prokopchyk.builder.FlatBilder;
 import com.prokopchyk.building.Flat;
-import org.junit.Before;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
 
@@ -21,7 +18,7 @@ public class FlatServiceTest{
     @BeforeEach
      void setUp(){
          flat = new FlatBilder()
-                .setSqrt(area)
+                .setArea(area)
                 .setNumberOfHuman(numPeople)
                 .setNumOfFlat()
                 .bilder();
@@ -29,7 +26,7 @@ public class FlatServiceTest{
 
     @Test
      void createFlat(){
-        Flat expFlat = FlatService.getFlatService().createFlat();
+        Flat expFlat = FlatService.getFlatService().createFlat(1,1);
         Assertions.assertEquals(expFlat,flat);
     }
 
@@ -43,7 +40,7 @@ public class FlatServiceTest{
     }
     @Test
     void cloneFlat() {
-        Flat expFlat = FlatService.getFlatService().cloneFlat(flat);
-        Assertions.assertEquals(expFlat,flat);
+        Flat expFlat = FlatService.getFlatService().cloneFlat(flat,1,1);
+        assertEquals(expFlat,flat);
     }
 }
